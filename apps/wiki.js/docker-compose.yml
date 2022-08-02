@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:11-alpine
+    environment:
+      POSTGRES_DB: wiki
+      POSTGRES_PASSWORD: wikijsrocks
+      POSTGRES_USER: wikijs
+    logging:
+      driver: "none"
+    restart: unless-stopped
+    volumes:
+      - wiki-db-data:/var/lib/postgresql/data
+    networks:
+      - wiki_backend_bridge
+
+  wiki:
+    image: ghcr.io/requarks/wiki:2
+    depends_on:
+      - db
+    environment:
+      DB_TYPE: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: wikijs
+      DB_PASS: wikijsrocks
+      DB_NAME: wiki
+      VIRTUAL_HOST: "wiki.${HOSTNAME}.lan"
+      VIRTUAL_PORT: 3000
+    restart: unless-stopped
+    networks:
+      - network_proxy_bridge
+      - wiki_backend_bridge
+
+volumes:
+  wiki-db-data:
+
+networks:
+  network_proxy_bridge:
+    external: true
+  wiki_backend_bridge:
+    driver: bridge
