@@ -36,7 +36,7 @@ def exec_docker_compose(args, cwd):
             with open(env_file, "w") as outfile:
                 subprocess.check_call(args=[env_script], cwd=cwd, stdout=outfile)
 
-        subprocess.check_call(args=["echo", cwd, "docker-compose"] + args, cwd=cwd)
+        subprocess.check_call(args=["docker-compose"] + args, cwd=cwd)
     finally:
         if env_generated:
             os.remove(env_file)
@@ -166,6 +166,7 @@ def main(argv):
         name, func = action_list[i]
         print(f"Invoking action {i+1}/{len(action_list)}: {name}")
         func(opts, name, app_list)
+
     return 0
 
 
