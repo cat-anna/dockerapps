@@ -2,9 +2,9 @@ version: "3.3"
 # /var/jenkins_home/secrets/initialAdminPassword
 services:
   jenkins:
-    container_name: jenkins_test
+    container_name: jenkins
     restart: unless-stopped
-    image: lan.calypso.jenkins
+    image: lan.jenkins.${HOSTNAME}
     # privileged: true
     build:
       context: ./

@@ -4,6 +4,7 @@ services:
   subdomain_proxy:
     image: nginxproxy/nginx-proxy:alpine
     container_name: subdomain_proxy
+    restart: unless-stopped
     ports:
       - "80:80"
     volumes:
@@ -13,7 +14,6 @@ services:
       - ENABLE_IPV6=true
     networks:
       - proxy_bridge
-    restart: unless-stopped
 
 networks:
   proxy_bridge:

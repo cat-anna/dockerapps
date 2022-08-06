@@ -1,12 +1,11 @@
 #!/usr/bin/env -S python3 -u
 
 # import yaml
-from genericpath import isfile
 import sys
 import os
 import subprocess
 import re
-
+import grp
 
 def stripComments(line):
     r = re.sub(r"#.+$", "", str(line)).strip()
@@ -137,6 +136,13 @@ def process_app_arg(opts, value):
     return None
 
 
+def setup_env_variables():
+    if "HOSTNAME" not in os.environ:
+        os.environ["HOSTNAME"] = os.uname()[1]
+    if "DOCKER_GID" not in os.environ:
+        os.environ["DOCKER_GID"] = f"{grp.getgrnam('docker').gr_gid}"
+
+
 def main(argv):
     if len(argv) < 3:
         print("USAGE: APP [APP...] action")
@@ -155,14 +161,14 @@ def main(argv):
 
     action_list = get_action_list(action=argv[-1])
 
-    if "HOSTNAME" not in os.environ:
-        os.environ["HOSTNAME"] = os.uname()[1]
+    setup_env_variables()
 
     for i in range(len(action_list)):
         name, func = action_list[i]
         print(f"Invoking action {i+1}/{len(action_list)}: {name}")
         func(opts, name, app_list)
 
+    print("Completed")
     return 0
 
 
