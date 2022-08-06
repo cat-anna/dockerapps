@@ -17,7 +17,7 @@ services:
       - network_proxy_bridge
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - jenkins-test-data:/var/jenkins_home
+      - jenkins-data:/var/jenkins_home
     ports:
       - 50000:50000
 
@@ -26,4 +26,4 @@ networks:
     external: true
 
 volumes:
-  jenkins-test-data:
+  jenkins-data:
