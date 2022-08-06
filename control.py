@@ -67,12 +67,8 @@ ACTIONS = {
     "build": action_build,
     "recreate": ["build", "up"],
     "restart": ["stop", "start"],  # needed to maitain order of containers
-    "up": lambda a, b, c: action_template_forward(
-        a, b, c, ["up", "-d", "--force-recreate"]
-    ),
-    "down": lambda a, b, c: action_template_forward(
-        a, b, c, ["down", "--remove-orphans"]
-    ),
+    "up": lambda a, b, c: action_template_forward(a, b, c, ["up", "-d"]),
+    "down": lambda a, b, c: action_template_forward(a, b, c, ["down"]),
     "stop": lambda a, b, c: action_template_reverse(a, b, c, ["stop"]),
     "start": lambda a, b, c: action_template_forward(a, b, c, ["start"]),
 }
