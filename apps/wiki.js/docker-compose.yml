@@ -11,9 +11,9 @@ services:
       driver: "none"
     restart: unless-stopped
     volumes:
-      - wiki-db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
     networks:
-      - wiki_backend_bridge
+      - backend_bridge
 
   wiki:
     image: ghcr.io/requarks/wiki:2
@@ -31,13 +31,13 @@ services:
     restart: unless-stopped
     networks:
       - network_proxy_bridge
-      - wiki_backend_bridge
+      - backend_bridge
 
 volumes:
-  wiki-db-data:
+  db-data:
 
 networks:
   network_proxy_bridge:
     external: true
-  wiki_backend_bridge:
+  backend_bridge:
     driver: bridge
