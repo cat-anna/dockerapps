@@ -1,0 +1,29 @@
+version: "3.3"
+# /var/jenkins_home/secrets/initialAdminPassword
+services:
+  jenkins:
+    container_name: jenkins_test
+    restart: unless-stopped
+    image: lan.calypso.jenkins
+    # privileged: true
+    build:
+      context: ./
+      args:
+          DOCKER_GID: ${DOCKER_GID}
+    environment:
+      - VIRTUAL_HOST=jenkins.${HOSTNAME}.lan
+      - VIRTUAL_PORT=8080
+    networks:
+      - network_proxy_bridge
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - jenkins-test-data:/var/jenkins_home
+    ports:
+      - 50000:50000
+
+networks:
+  network_proxy_bridge:
+    external: true
+
+volumes:
+  jenkins-test-data:
