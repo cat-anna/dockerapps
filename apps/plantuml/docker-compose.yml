@@ -3,12 +3,12 @@ services:
   plantuml:
     image: plantuml/plantuml-server:latest
     container_name: plantuml
+    restart: unless-stopped
     environment:
       - VIRTUAL_HOST=plantuml.${HOSTNAME}.lan
     networks:
-      - network_proxy_bridge
-    restart: unless-stopped
+      - subdomain_proxy_bridge
 
 networks:
-  network_proxy_bridge:
+  subdomain_proxy_bridge:
     external: true

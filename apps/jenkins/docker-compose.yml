@@ -14,16 +14,16 @@ services:
       - VIRTUAL_HOST=jenkins.${HOSTNAME}.lan
       - VIRTUAL_PORT=8080
     networks:
-      - network_proxy_bridge
+      - subdomain_proxy_bridge
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - jenkins-data:/var/jenkins_home
+      - data:/var/jenkins_home
     ports:
       - 50000:50000
 
 networks:
-  network_proxy_bridge:
+  subdomain_proxy_bridge:
     external: true
 
 volumes:
-  jenkins-data:
+  jenkinsdata:
