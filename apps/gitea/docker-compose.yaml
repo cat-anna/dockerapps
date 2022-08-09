@@ -1,0 +1,21 @@
+version: "3"
+services:
+  server:
+    image: gitea/gitea:latest
+    container_name: gitea
+    environment:
+      - USER_UID=${USER_UID}
+      - USER_GID=${USER_GID}
+      - VIRTUAL_HOST=gitea.${HOSTNAME}.lan
+      - VIRTUAL_PORT=3000
+    networks:
+      - subdomain_proxy_bridge
+    volumes:
+      - ${USER_HOME}/.ssh/:/data/git/.ssh
+      - ${USER_HOME}/data/:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+networks:
+  subdomain_proxy_bridge:
+    external: true
