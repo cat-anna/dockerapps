@@ -6,6 +6,7 @@ import os
 import subprocess
 import re
 import grp
+import pwd
 
 def stripComments(line):
     r = re.sub(r"#.+$", "", str(line)).strip()
@@ -33,7 +34,7 @@ def exec_docker_compose(args, cwd):
         if os.path.isfile(env_script):
             env_generated = True
             with open(env_file, "w") as outfile:
-                subprocess.check_call(args=[env_script], cwd=cwd, stdout=outfile)
+                subprocess.check_call(args=["/usr/bin/bash", "-c", env_script], cwd=cwd, stdout=outfile)
 
         subprocess.check_call(args=["docker-compose"] + args, cwd=cwd)
     finally:
