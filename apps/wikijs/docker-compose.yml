@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  wikijs:
+    image: ghcr.io/requarks/wiki:2
+    restart: unless-stopped
+    container_name: wikijs
+    environment:
+      DB_TYPE: sqlite
+      VIRTUAL_HOST: "wiki.${HOSTNAME}.lan"
+      VIRTUAL_PORT: 3000
+    networks:
+      - subdomain_proxy_bridge
+    volumes:
+      - content:/wiki/data/content
+
+volumes:
+  content:
+
+networks:
+  subdomain_proxy_bridge:
+    external: true
