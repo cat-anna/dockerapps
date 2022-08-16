@@ -1,18 +1,34 @@
 version: '2'
 # https://github.com/nginx-proxy/nginx-proxy
 services:
-  subdomain_proxy:
-    image: nginxproxy/nginx-proxy:alpine
-    container_name: subdomain_proxy
+  nginx:
+    image: nginx
+    container_name: nginx
     restart: unless-stopped
     ports:
       - "80:80"
       # - "443:443"
     volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /etc/nginx/conf.d
+    networks:
+      - proxy_bridge
     environment:
       - DEFAULT_HOST=whoami.${HOSTNAME}.lan
       - ENABLE_IPV6=true
+  dockergen:
+    image: nginxproxy/docker-gen
+    container_name: dockergen
+    restart: unless-stopped
+    command: -config /etc/docker-gen/dockergen.conf
+    environment:
+      - DEFAULT_HOST=whoami.${HOSTNAME}.lan
+      - ENABLE_IPV6=true
+    volumes_from:
+      - nginx
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /etc/subdomains/:/etc/subdomains/
+      - ./docker-gen/:/etc/docker-gen/
     networks:
       - proxy_bridge
 

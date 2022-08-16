@@ -1,0 +1,49 @@
+subdomains:
+{{ range $host, $containers := groupByMulti $ "Env.VIRTUAL_HOST" "," }}
+  - host: {{ $host }}
+{{ $containersLen := len $containers }}
+{{ if eq $containersLen 1 }}
+{{ range $index, $value := $containers }}
+	{{ $addrLen := len $value.Addresses }}
+	{{ $network := index $value.Networks 0 }}
+    container: {{ $value.ID }}
+    name: {{ $value.Name }}
+	{{ if $value.Env.VIRTUAL_ICON }}
+    favicon: {{ $value.Env.VIRTUAL_ICON }}
+	{{ end }}
+
+	{{/* If only 1 port exposed, use that */}}
+	{{ if eq $addrLen 1 }}
+		{{ with $address := index $value.Addresses 0 }}
+    target: "{{ $network.IP }}:{{ $address.Port }}"
+		{{ end }}
+
+	{{ else if $value.Env.VIRTUAL_PORT }}
+		{{ range $i, $address := $value.Addresses }}
+			{{ if eq $address.Port $value.Env.VIRTUAL_PORT }}
+    target: "{{ $network.IP }}:{{ $address.Port }}"
+			{{ end }}
+		{{ end }}
+
+	{{/* Else default to standard web port 80 */}}
+	{{ else }}
+		{{ range $i, $address := $value.Addresses }}
+			{{ if eq $address.Port "80" }}
+    target: "{{ $network.IP }}:{{ $address.Port }}"
+			{{ end }}
+		{{ end }}
+	{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}
+containers:
+{{range $key, $value := .}}
+  - name: {{ $value.Name }}
+    addresses:
+ {{range $val := $value.Addresses}}
+    - ip: {{ $val.IP }}
+      port: {{ $val.Port }}
+ {{end}}
+    image: {{ $value.Image.Repository }}
+    containerid: {{ $value.ID }}
+{{end}}
