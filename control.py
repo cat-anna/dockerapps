@@ -60,7 +60,7 @@ def action_build(opts, action, apps):
     for app in apps:
         root = get_app_dir(opts=opts, app=app)
         exec_docker_compose(args=["pull"], cwd=root)
-        exec_docker_compose(args=["build", "--no-cache"], cwd=root)
+        exec_docker_compose(args=["build", "--no-cache", "--pull"], cwd=root)
 
 
 ACTIONS = {
