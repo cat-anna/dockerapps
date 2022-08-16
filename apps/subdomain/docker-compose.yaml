@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
     command: -config /etc/docker-gen/dockergen.conf
     environment:
-      - DEFAULT_HOST=whoami.${HOSTNAME}.lan
+      - DEFAULT_HOST=home.${HOSTNAME}.lan
       - ENABLE_IPV6=true
     volumes_from:
       - nginx
