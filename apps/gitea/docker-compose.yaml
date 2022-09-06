@@ -3,6 +3,7 @@ services:
   server:
     image: gitea/gitea:latest
     container_name: gitea
+    restart: unless-stopped
     environment:
       - USER_UID=${USER_UID}
       - USER_GID=${USER_GID}
