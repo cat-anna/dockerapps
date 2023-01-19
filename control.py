@@ -26,7 +26,7 @@ def exec_docker(args, cwd):
     subprocess.check_call(args=["docker"] + args, cwd=cwd)
 
 
-def exec_docker_compose(args, cwd):
+def exec_docker_compose(args, cwd, app):
     env_script = os.path.join(cwd, "env.sh")
     env_file = os.path.join(cwd, ".env")
     env_generated = False
@@ -36,10 +36,17 @@ def exec_docker_compose(args, cwd):
             with open(env_file, "w") as outfile:
                 subprocess.check_call(args=["/usr/bin/bash", "-c", env_script], cwd=cwd, stdout=outfile)
 
+        name = app["name"]
+        if name.startswith("apps/"):
+            name = name[5:]
+        app_home = os.path.join(os.environ["DOCKER_APPS_HOME"], name)
+        os.environ["APP_HOME"] = app_home
+        print(f"Using app home {app_home}")
         subprocess.check_call(args=["docker-compose"] + args, cwd=cwd)
     finally:
         if env_generated:
             os.remove(env_file)
+        os.environ["APP_HOME"] = "" 
 
 
 def get_app_dir(opts, app):
@@ -49,7 +56,7 @@ def get_app_dir(opts, app):
 def action_template_forward(opts, action, apps, args):
     for app in apps:
         root = get_app_dir(opts=opts, app=app)
-        exec_docker_compose(args=args, cwd=root)
+        exec_docker_compose(args=args, cwd=root, app=app)
 
 
 def action_template_reverse(opts, action, apps, args):
@@ -131,7 +138,7 @@ def process_app_arg(opts, value):
 
         for compose_file in compose_files:
             if os.path.isfile(compose_file):
-                return [{"compose_dir": option}]
+                return [{"compose_dir": option, "name": value}]
 
     print(f"Failed to find app {value} - TODO")
     return None
@@ -148,6 +155,8 @@ def main(argv):
     if len(argv) < 3:
         print("USAGE: APP [APP...] action")
         return 1
+
+    assert("DOCKER_APPS_HOME" in os.environ)
 
     opts = {
         "script_dir": os.path.dirname(os.path.realpath(__file__)),

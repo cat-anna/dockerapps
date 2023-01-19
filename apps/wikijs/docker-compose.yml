@@ -12,10 +12,7 @@ services:
     networks:
       - subdomain_proxy_bridge
     volumes:
-      - content:/wiki/data/content
-
-volumes:
-  content:
+      - ${APP_HOME}:/wiki/data/content
 
 networks:
   subdomain_proxy_bridge:

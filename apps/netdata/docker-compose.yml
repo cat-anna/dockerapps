@@ -14,20 +14,15 @@ services:
     security_opt:
       - apparmor:unconfined
     volumes:
-      - config:/etc/netdata
-      - lib:/var/lib/netdata
-      - cache:/var/cache/netdata
+      - ${APP_HOME}/config:/etc/netdata
+      - ${APP_HOME}/lib:/var/lib/netdata
+      - ${APP_HOME}/cache:/var/cache/netdata
       - /etc/passwd:/host/etc/passwd:ro
       - /etc/group:/host/etc/group:ro
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /etc/os-release:/host/etc/os-release:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-
-volumes:
-  config:
-  lib:
-  cache:
 
 networks:
   subdomain_proxy_bridge:

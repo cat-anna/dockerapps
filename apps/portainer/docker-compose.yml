@@ -7,15 +7,13 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - data:/data
+      - ${APP_HOME}:/data
     environment:
       - VIRTUAL_HOST=portainer.${HOSTNAME}.lan
       - VIRTUAL_PORT=9000
       - VIRTUAL_ICON=/2dcfc527d067d4ae3424.png
     networks:
       - subdomain_proxy_bridge
-volumes:
-  data:
 
 networks:
   subdomain_proxy_bridge:

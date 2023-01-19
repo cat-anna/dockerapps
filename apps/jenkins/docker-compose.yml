@@ -17,13 +17,10 @@ services:
       - subdomain_proxy_bridge
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - data:/var/jenkins_home
+      - ${APP_HOME}:/var/jenkins_home
     ports:
       - 50000:50000
 
 networks:
   subdomain_proxy_bridge:
     external: true
-
-volumes:
-  data:
